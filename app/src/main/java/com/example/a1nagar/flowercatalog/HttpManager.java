@@ -29,6 +29,7 @@ public class HttpManager {
         }
         catch (Exception e){
             e.printStackTrace();
+            return null;
         }
         finally {
             if(reader!=null) {
