@@ -15,6 +15,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.a1nagar.flowercatalog.model.Flower;
+import com.example.a1nagar.flowercatalog.parsers.FlowerJsonParser;
+
+import java.util.List;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -62,7 +67,7 @@ public class MainActivity extends ActionBarActivity {
             case R.id.action_doTask:
                 // updateDisplay("Task Done");
                 if(isOnline()) {
-                    requestData();
+                    requestData("http://services.hanselandpetal.com/feeds/flowers.json");
                 }
                 else {
                     Toast.makeText(this,"Device Not Connected to the Internet",Toast.LENGTH_LONG).show();
@@ -80,9 +85,9 @@ public class MainActivity extends ActionBarActivity {
         return handled;
     }
 
-    private void requestData() {
+    private void requestData(String uri) {
         myTask t = new myTask();
-        t.execute("1","2","3");
+        t.execute(uri);
     }
 
     private void updateDisplay(String message) {
@@ -114,7 +119,16 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            updateDisplay(s);
+
+            List<Flower> flowerList = FlowerJsonParser.parseFeed(s);
+
+            for (Flower flower : flowerList) {
+                updateDisplay(flower.getName());
+
+            }
+
+
+
             pb.setVisibility(View.INVISIBLE);
         }
 
@@ -127,17 +141,8 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         protected String doInBackground(String... params) {
-
-            for(int i=0; i < params.length;i++) {
-                publishProgress("Working with " + params[i]);
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            return "Task Complete";
+            String str = HttpManager.getData(params[0]);
+            return str;
         }
 
 
