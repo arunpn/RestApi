@@ -1,6 +1,7 @@
 package com.example.a1nagar.flowercatalog;
 
 import android.net.Uri;
+import android.util.Base64;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,5 +46,46 @@ public class HttpManager {
 
 
     }
+
+    public static String getData( String uri,String username, String password)
+    {
+        BufferedReader reader = null;
+        byte[] loginByte = (username + ":" + password).getBytes();
+        StringBuilder loginBuilder = new StringBuilder().append("Basic ").append(Base64.encodeToString(loginByte,Base64.DEFAULT));
+
+
+        try {
+            URL url = new URL(uri);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.addRequestProperty("Authorization",loginBuilder.toString());
+            StringBuilder sb = new StringBuilder();
+            reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line;
+
+            while ( (line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            return sb.toString();
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+        finally {
+            if(reader!=null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return  null;
+                }
+            }
+        }
+
+
+
+    }
+
 
 }

@@ -31,14 +31,14 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-         output = (TextView) findViewById(R.id.textView);
+        output = (TextView) findViewById(R.id.textView);
         pb = (ProgressBar) findViewById(R.id.progressBar);
         pb.setVisibility(View.INVISIBLE);
 
-         output.setMovementMethod( new ScrollingMovementMethod());
+        output.setMovementMethod(new ScrollingMovementMethod());
 
 
-        for(int i=0; i < 3; i++){
+        for (int i = 0; i < 3; i++) {
 
             updateDisplay("Hi How Are You");
 
@@ -56,21 +56,18 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
 
         boolean handled = true;
         int id = item.getItemId();
 
-        switch(id) {
+        switch (id) {
             case R.id.action_doTask:
                 // updateDisplay("Task Done");
-                if(isOnline()) {
-                    requestData("http://services.hanselandpetal.com/feeds/flowers.json");
-                }
-                else {
-                    Toast.makeText(this,"Device Not Connected to the Internet",Toast.LENGTH_LONG).show();
+                if (isOnline()) {
+                    requestData("http://services.hanselandpetal.com/secure/flowers.json");
+                } else {
+                    Toast.makeText(this, "Device Not Connected to the Internet", Toast.LENGTH_LONG).show();
 
                 }
                 break;
@@ -79,8 +76,6 @@ public class MainActivity extends ActionBarActivity {
 
         }
 
-
-        //noinspection SimplifiableIfStatement
 
         return handled;
     }
@@ -95,22 +90,20 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    protected boolean isOnline()
-    {
+    protected boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo nm = cm.getActiveNetworkInfo();
 
-        if (nm!=null && nm.isConnectedOrConnecting()) {
+        if (nm != null && nm.isConnectedOrConnecting()) {
             return true;
-        }else {
+        } else {
             return false;
         }
 
 
     }
 
-    private class myTask extends AsyncTask<String ,String,String>
-    {
+    private class myTask extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {
             updateDisplay("Starting Task");
@@ -128,7 +121,6 @@ public class MainActivity extends ActionBarActivity {
             }
 
 
-
             pb.setVisibility(View.INVISIBLE);
         }
 
@@ -138,10 +130,9 @@ public class MainActivity extends ActionBarActivity {
         }
 
 
-
         @Override
         protected String doInBackground(String... params) {
-            String str = HttpManager.getData(params[0]);
+            String str = HttpManager.getData(params[0],"feeduser","feedpassword");
             return str;
         }
 
